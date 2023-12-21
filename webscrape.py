@@ -1,22 +1,28 @@
-import requests
-from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
 
-url = 'https://destinationinsights.withgoogle.com/intl/en_ALL/'
+# Set up the Selenium driver (e.g., Chrome)
+driver = webdriver.Chrome()
 
-# Send an HTTP request to the URL
-response = requests.get(url)
+# Open the webpage
+driver.get("https://destinationinsights.withgoogle.com/intl/en_ALL/")
 
-# Check if the request was successful (status code 200)
-if response.status_code == 200:
-    # Parse the HTML content of the page
-    soup = BeautifulSoup(response.text, 'html.parser')
+# Wait for 10 seconds
+time.sleep(30)
 
-    # Locate and extract the data you need using BeautifulSoup
-    # For example, find all the links on the page
-    links = soup.find_all('a', href=True)
+element = driver.find_element(By.XPATH, "//*[@aria-controls='outbound-destination-interest']")
+element.click()
 
-    # Process and print the extracted data
-    for link in links:
-        print(link['href'])
-else:
-    print(f"Failed to retrieve data. Status code: {response.status_code}")
+# Click the element with the specified XPath
+element = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div/div[2]/div[2]/div/div[1]/div[1]/div[1]/div/div/a')
+element.click()
+
+time.sleep(30)
+
+
+# Proceed with your scraping or further actions
+# ...
+
+# Close the browser
+driver.quit()
