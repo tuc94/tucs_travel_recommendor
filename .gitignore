@@ -7,3 +7,5 @@
 # Ignore Terraform .terraform.tfstate files
 *.tfstate
 *.tfstate.backup
+
+*.zip

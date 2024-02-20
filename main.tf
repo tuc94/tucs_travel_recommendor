@@ -3,23 +3,6 @@ provider "aws" {
      shared_credentials_files = ["~/.aws/credentials"]
 }
 
-resource "aws_iam_role" "lambda_role" {
-  name = "lambda_role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action = "sts:AssumeRole",
-        Effect = "Allow",
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        },
-      },
-    ],
-  })
-}
-
 data "archive_file" "misc_code_zip" {
   type        = "zip"
   source_dir  = "./Misc"  # Relative path to your /misc directory
@@ -28,7 +11,7 @@ data "archive_file" "misc_code_zip" {
 
 data "archive_file" "google_trends_code_zip" {
   type        = "zip"
-  source_dir  = "./googleTrendsDestination"  # Relative path to your /googleTrendsDestination directory
+  source_dir  = "./googleTrendsDestination/"  # Relative path to your /googleTrendsDestination directory
   output_path = "${path.module}/google_trends_code.zip"
 }
 
@@ -45,8 +28,8 @@ resource "aws_s3_bucket_object" "google_trends_code_zip" {
 }
 
 resource "aws_lambda_function" "my_lambda_function" {
-  function_name    = "my-lambda-function"
-  role             = aws_iam_role.lambda_role.arn
+  function_name    = "google_trends_webscrape"
+  role             = "arn:aws:iam::833405552214:role/lambda_role"
   handler          = "index.handler"  # Specify the appropriate handler for your code
   runtime          = "python3.8"     # Specify the appropriate runtime for your code
   filename         = aws_s3_bucket_object.misc_code_zip.source  # Use the path to your zip file
